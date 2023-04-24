@@ -245,7 +245,12 @@ for (element in unique_element) {
 
 ```
 
-### Passo 7
+### Passo 7 - Criação de uma planilha no sheets
+
+```{r}
+
+```
+
 
 ## Exercício 3
 
