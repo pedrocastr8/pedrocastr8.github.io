@@ -25,7 +25,7 @@ for (i in 1:1000) {
 users_df <- dplyr::bind_rows(users)
 
 # Create a new column for user's state based on their phone number's area code
-json_text <- readLines("~/Desktop/greenpeace_data_eng_test/dddsBrasileiros.json", warn = FALSE)
+json_text <- readLines("./dddsBrasileiros.json", warn = FALSE)
 json <- fromJSON(json_text)
 df_ddd_uf <- tibble(
   DDD = names(json$estadoPorDdd),
@@ -39,7 +39,7 @@ users_df_teste <- users_df %>%
 
 # Join user pokemon
 
-users_pokemon_df <- users_df %>%
+users_pokemon_df <- users_df_teste %>%
   mutate(pokemon = sample(pokemon_df$name, size = n(), replace = TRUE)) %>%
   inner_join(pokemon_df, by = "pokemon")
 
