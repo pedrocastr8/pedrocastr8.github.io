@@ -15,7 +15,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r, warning=FALSE}
 library(dplyr)
 library(bigrquery)
-library(xtable)
 library(httr)
 library(jsonlite)
 library(googledrive)
