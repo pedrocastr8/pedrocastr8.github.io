@@ -1,10 +1,9 @@
 ---
 title: "atividade data engineer greenpeace"
 output:
-  pdf_document: default
+  html_document: default
   keep_md: yes
   warnings: no
-  html_document: default
 date: "`r Sys.Date()`"
 ---
 

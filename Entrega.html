@@ -569,6 +569,18 @@ garantir novamente a tabela “press_data” é selecionada novamente. Os
 exemplos buscados seguem os padrões da <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_ALTER_DEFAULT_PRIVILEGES.html">documentação
 sobre privilégios</a></p>
 </div>
+<div id="section-6" class="section level3">
+<h3>3.3</h3>
+<ul>
+<li>Para mudar o proprietário de uma tabela deve-se usar o comando</li>
+</ul>
+<pre><code>ALTER TABLE press_data OWNER TO gp_new_user;</code></pre>
+<p>Foi usada a mesma tabela que nos exemplos anteriores. Uma observação
+que deve ser feita é que somente usuários que tenham os privilégios
+necessários podem alterar o acesso de cada usuário, como por exemplo
+superusuários. Os exemplos de como realizar a alteração estão <a href="https://docs.aws.amazon.com/redshift/latest/dg/r_ALTER_TABLE.html">neste
+link</a></p>
+</div>
 </div>
 
 
