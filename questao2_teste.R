@@ -32,10 +32,35 @@ df_ddd_uf <- tibble(
   UF = unlist(json$estadoPorDdd)
 )
 users_df_teste <- users_df %>%
-  mutate(DDD = stringr::str_sub(phone, 2, 3),
-         UF = df_ddd_uf$UF[match(DDD, df_ddd_uf$DDD)],
-         .keep = "unused") %>%
+  mutate(DDD = stringr::str_sub(cell, 2, 3),
+         UF = df_ddd_uf$UF[match(DDD, df_ddd_uf$DDD)]) %>%
   filter(!is.na(UF))
+
+# Starter pokemons from each generation
+pokemons <- c("bulbasaur", "charmander", "squirtle", "pikachu", "chikorita", "cyndaquil", "totodile", "treecko",
+              "torchic", "mudkip", "turtwig", "chimchar", "piplup", "snivy", "tepig", "oshawott", "chespin",
+              "fennekin", "froakie", "rowlet", "litten", "popplio", "grookey", "scorbunny", "sobble")
+
+pokemon_data <- list()
+
+for (pokemon in pokemons) {
+  # query to get name and id for pokemons list
+  response_info <- GET(paste0("https://pokeapi.co/api/v2/pokemon/", pokemon))
+  name <- content(response_info)$name
+  id <- content(response_info)$id
+  
+  # get all informations
+  response_type <- GET(paste0("https://pokeapi.co/api/v2/pokemon-species/", pokemon))
+  types <- content(response_type)$color$name
+  
+  # add to list
+  pokemon_data[[pokemon]] <- c(name = name, id = id, element = types)
+}
+
+# convert to data frame
+pokemon_df <- bind_rows(pokemon_data, .id = "pokemon") %>%
+  select(id, pokemon,name, element)
+
 
 # Join user pokemon
 
