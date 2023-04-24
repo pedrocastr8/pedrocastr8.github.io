@@ -19,6 +19,7 @@ library(xtable)
 library(httr)
 library(jsonlite)
 library(googledrive)
+library(readr)
 ```
 
 
@@ -230,7 +231,7 @@ for (element in unique_element) {
     # Subset the data to only include rows with the current element and gender
     subset_data <- users_pokemon_df %>%
       filter(element == !!element, gender == !!gender) %>%
-      select(1, 12, 13, 16) # Select created columns and gender column
+      select(1, 14, 15, 18) # Select created columns and gender column
     
     # Write the CSV file to the corresponding folder
     write_csv(subset_data, file.path(getwd(), element, paste0(gender, "_users_pokemon.csv")))
@@ -244,7 +245,7 @@ for (element in unique_element) {
 
 ```
 
-
+### Passo 7
 
 ## Exercício 3
 

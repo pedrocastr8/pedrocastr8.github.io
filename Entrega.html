@@ -370,7 +370,8 @@ display: none;
 library(xtable)
 library(httr)
 library(jsonlite)
-library(googledrive)</code></pre>
+library(googledrive)
+library(readr)</code></pre>
 </div>
 <div id="exercício-1" class="section level2">
 <h2>Exercício 1</h2>
@@ -515,25 +516,106 @@ sample_C</code></pre>
 <h2>Exercício 2</h2>
 <div id="passo-1---gerar-uma-tabela-com-1000-usuários-brasileiros" class="section level3">
 <h3>Passo 1 - gerar uma tabela com 1000 usuários brasileiros</h3>
-<pre class="r"><code># # Function for user in API
-# get_random_user &lt;- function() {
-#   # Make the API request
-#   response &lt;- httr::GET(&quot;https://randomuser.me/api/?nat=BR&quot;)
-#   # Parse the JSON response
-#   json &lt;- jsonlite::fromJSON(httr::content(response, &quot;text&quot;), simplifyDataFrame = TRUE)
-#   # Extract the user data
-#   user &lt;- json$results
-#   return(user)
-# }
-# 
-# # Single user
-# users &lt;- list()
-# for (i in 1:1000) {
-#   users[[i]] &lt;- get_random_user()
-# }
-# 
-# # Convert to df
-# users_df &lt;- dplyr::bind_rows(users)</code></pre>
+<pre class="r"><code># Function for user in API
+get_random_user &lt;- function() {
+  # Make the API request
+  response &lt;- httr::GET(&quot;https://randomuser.me/api/?nat=BR&quot;)
+  # Parse the JSON response
+  json &lt;- jsonlite::fromJSON(httr::content(response, &quot;text&quot;), simplifyDataFrame = TRUE)
+  # Extract the user data
+  user &lt;- json$results
+  return(user)
+}
+
+# Single user
+users &lt;- list()
+for (i in 1:1000) {
+  users[[i]] &lt;- get_random_user()
+}
+
+# Convert to df
+users_df &lt;- dplyr::bind_rows(users)</code></pre>
+</div>
+<div id="passo-2---criar-uma-coluna-de-estado-do-usuário-baseado-no-celular" class="section level3">
+<h3>Passo 2 - Criar uma coluna de Estado do usuário baseado no
+celular</h3>
+<pre class="r"><code># Create a new column for user&#39;s state based on their phone number&#39;s area code
+json_text &lt;- readLines(&quot;./dddsBrasileiros.json&quot;, warn = FALSE)
+json &lt;- fromJSON(json_text)
+df_ddd_uf &lt;- tibble(
+  DDD = names(json$estadoPorDdd),
+  UF = unlist(json$estadoPorDdd)
+)
+users_df &lt;- users_df %&gt;%
+  mutate(DDD = stringr::str_sub(cell, 2, 3),
+         UF = df_ddd_uf$UF[match(DDD, df_ddd_uf$DDD)]) %&gt;%
+  filter(!is.na(UF))</code></pre>
+</div>
+<div id="passo-3---baixar-os-pokemons-iniciais-de-cada-geração-via-pokeapi" class="section level3">
+<h3>Passo 3 - Baixar os pokemons iniciais de cada geração via
+pokeAPI</h3>
+<pre class="r"><code># Starter pokemons from each generation
+pokemons &lt;- c(&quot;bulbasaur&quot;, &quot;charmander&quot;, &quot;squirtle&quot;, &quot;pikachu&quot;, &quot;chikorita&quot;, &quot;cyndaquil&quot;, &quot;totodile&quot;, &quot;treecko&quot;,
+              &quot;torchic&quot;, &quot;mudkip&quot;, &quot;turtwig&quot;, &quot;chimchar&quot;, &quot;piplup&quot;, &quot;snivy&quot;, &quot;tepig&quot;, &quot;oshawott&quot;, &quot;chespin&quot;,
+              &quot;fennekin&quot;, &quot;froakie&quot;, &quot;rowlet&quot;, &quot;litten&quot;, &quot;popplio&quot;, &quot;grookey&quot;, &quot;scorbunny&quot;, &quot;sobble&quot;)
+
+pokemon_data &lt;- list()
+
+for (pokemon in pokemons) {
+  # query to get name and id for pokemons list
+  response_info &lt;- GET(paste0(&quot;https://pokeapi.co/api/v2/pokemon/&quot;, pokemon))
+  name &lt;- content(response_info)$name
+  id &lt;- content(response_info)$id
+  
+  # get all informations
+  response_type &lt;- GET(paste0(&quot;https://pokeapi.co/api/v2/pokemon-species/&quot;, pokemon))
+  types &lt;- content(response_type)$color$name
+  
+  # add to list
+  pokemon_data[[pokemon]] &lt;- c(name = name, id = id, element = types)
+}
+
+# convert to data frame
+pokemon_df &lt;- bind_rows(pokemon_data, .id = &quot;pokemon&quot;) %&gt;%
+  select(id, pokemon,name, element)</code></pre>
+</div>
+<div id="passo-4---atribuir-um-pokemon-inicial-a-cada-usuário-aleatoriamente" class="section level3">
+<h3>Passo 4 - Atribuir um pokemon inicial a cada usuário
+aleatoriamente</h3>
+<pre class="r"><code># Join user pokemon
+
+users_pokemon_df &lt;- users_df %&gt;%
+  mutate(pokemon = sample(pokemon_df$name, size = n(), replace = TRUE)) %&gt;%
+  inner_join(pokemon_df, by = &quot;pokemon&quot;)</code></pre>
+</div>
+<div id="passo-5---criação-da-pasta-e-dos-arquivos-para-cada-elemento-e-genêro" class="section level3">
+<h3>Passo 5 - Criação da pasta e dos arquivos para cada elemento e
+genêro</h3>
+<pre class="r"><code># Get distinct values from element column
+unique_element &lt;- unique(users_pokemon_df$element)
+unique_gender &lt;- unique(users_pokemon_df$gender)
+
+# Creating folders in current directory and writing CSV files
+for (element in unique_element) {
+  dir.create(paste0(getwd(), &quot;/&quot;, element), showWarnings = FALSE)
+  
+  for (gender in unique_gender) {
+    # Subset the data to only include rows with the current element and gender
+    subset_data &lt;- users_pokemon_df %&gt;%
+      filter(element == !!element, gender == !!gender) %&gt;%
+      select(1, 14, 15, 18) # Select created columns and gender column
+    
+    # Write the CSV file to the corresponding folder
+    write_csv(subset_data, file.path(getwd(), element, paste0(gender, &quot;_users_pokemon.csv&quot;)))
+  }
+}</code></pre>
+</div>
+<div id="passo-6---fazer-o-upload-das-pastas-e-arquivos-para-o-google-drive" class="section level3">
+<h3>Passo 6 - Fazer o upload das pastas e arquivos para o google
+drive</h3>
+</div>
+<div id="passo-7" class="section level3">
+<h3>Passo 7</h3>
 </div>
 </div>
 <div id="exercício-3" class="section level2">
