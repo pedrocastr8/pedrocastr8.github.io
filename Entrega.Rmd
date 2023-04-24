@@ -139,25 +139,25 @@ sample_C
 ### Passo 1 - gerar uma tabela com 1000 usuários brasileiros
 
 ```{r}
-# # Function for user in API
-# get_random_user <- function() {
-#   # Make the API request
-#   response <- httr::GET("https://randomuser.me/api/?nat=BR")
-#   # Parse the JSON response
-#   json <- jsonlite::fromJSON(httr::content(response, "text"), simplifyDataFrame = TRUE)
-#   # Extract the user data
-#   user <- json$results
-#   return(user)
-# }
-# 
-# # Single user
-# users <- list()
-# for (i in 1:1000) {
-#   users[[i]] <- get_random_user()
-# }
-# 
-# # Convert to df
-# users_df <- dplyr::bind_rows(users)
+# Function for user in API
+get_random_user <- function() {
+  # Make the API request
+  response <- httr::GET("https://randomuser.me/api/?nat=BR")
+  # Parse the JSON response
+  json <- jsonlite::fromJSON(httr::content(response, "text"), simplifyDataFrame = TRUE)
+  # Extract the user data
+  user <- json$results
+  return(user)
+}
+
+# Single user
+users <- list()
+for (i in 1:1000) {
+  users[[i]] <- get_random_user()
+}
+
+# Convert to df
+users_df <- dplyr::bind_rows(users)
 ```
 
 ### Passo 2 - Criar uma coluna de Estado do usuário baseado no celular
@@ -215,20 +215,35 @@ users_pokemon_df <- users_df %>%
   inner_join(pokemon_df, by = "pokemon")
 ```
 
-### Passo 5 - Conectar ao Google Drive e criação de uma pasta para cada elemento
+### Passo 5 - Criação da pasta e dos arquivos para cada elemento e genêro
 
 ```{r}
-drive_auth()
-
 # Get distinct values from element column
-
 unique_element <- unique(users_pokemon_df$element)
+unique_gender <- unique(users_pokemon_df$gender)
 
-# Creating folders in Google Drive
-
+# Creating folders in current directory and writing CSV files
 for (element in unique_element) {
-  drive_mkdir(paste0(element))}
+  dir.create(paste0(getwd(), "/", element), showWarnings = FALSE)
+  
+  for (gender in unique_gender) {
+    # Subset the data to only include rows with the current element and gender
+    subset_data <- users_pokemon_df %>%
+      filter(element == !!element, gender == !!gender) %>%
+      select(1, 12, 13, 16) # Select created columns and gender column
+    
+    # Write the CSV file to the corresponding folder
+    write_csv(subset_data, file.path(getwd(), element, paste0(gender, "_users_pokemon.csv")))
+  }
+}
 ```
+
+### Passo 6 - Fazer o upload das pastas e arquivos para o google drive
+
+```{r}
+
+```
+
 
 
 ## Exercício 3
