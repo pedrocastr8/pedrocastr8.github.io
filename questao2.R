@@ -59,13 +59,13 @@ for (pokemon in pokemons) {
 
 # convert to data frame
 pokemon_df <- bind_rows(pokemon_data, .id = "pokemon") %>%
-  select(id, pokemon,name, element)
+  select(id, pokemon,element)
 
 
 # Join user pokemon
 
 users_pokemon_df <- users_df_teste %>%
-  mutate(pokemon = sample(pokemon_df$name, size = n(), replace = TRUE)) %>%
+  mutate(pokemon = sample(pokemon_df$pokemon, size = n(), replace = TRUE)) %>%
   inner_join(pokemon_df, by = "pokemon")
 
 # Connect to Google Drive
@@ -84,7 +84,7 @@ for (element in unique_element) {
     # Subset the data to only include rows with the current element and gender
     subset_data <- users_pokemon_df %>%
       filter(element == !!element, gender == !!gender) %>%
-      select(1, 12, 13, 16)
+      select(1, 14, 15, 17)
     
     # Write the CSV file to the corresponding folder
     write_csv(subset_data, file.path(getwd(), element, paste0(gender, "_users_pokemon.csv")))
