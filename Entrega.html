@@ -606,9 +606,9 @@ drive_auth()</code></pre>
 <pre><code>## ℹ The googledrive package is using a cached token for
 ##   &#39;pedro.h.castr8@gmail.com&#39;.</code></pre>
 <pre class="r"><code># Find the ID of the &quot;greenpeace&quot; folder in your Google Drive
-greenpeace_folder_id &lt;- drive_find(n_max = 1, pattern = &quot;greenpeace&quot;, type = &quot;folder&quot;)$id
-
-# Get distinct values from element and gender columns
+greenpeace_folder_id &lt;- drive_find(n_max = 1, pattern = &quot;greenpeace&quot;, type = &quot;folder&quot;)$id</code></pre>
+<pre><code>## Auto-refreshing stale OAuth token.</code></pre>
+<pre class="r"><code># Get distinct values from element and gender columns
 unique_element &lt;- unique(users_pokemon_df$element)
 unique_gender &lt;- unique(users_pokemon_df$gender)
 
@@ -629,106 +629,106 @@ for (element in unique_element) {
     write_csv(subset_data, tmp_file_path)
     
     # Upload the CSV file to the corresponding folder in Google Drive
-    drive_upload(tmp_file_path, type = &quot;text/csv&quot;, path = element_folder$id, name = file_name)
+    drive_upload(tmp_file_path, type = &quot;text/csv&quot;, path = element_folder$id, name = file_name, overwrite = TRUE)
     
     # Remove the temporary file
     file.remove(tmp_file_path)
   }
 }</code></pre>
 <pre><code>## Created Drive file:</code></pre>
-<pre><code>## • &#39;green&#39; &lt;id: 1Y1kzYBtkIq39uSf9t4l1aOkA5VpQQrXc&gt;</code></pre>
+<pre><code>## • &#39;green&#39; &lt;id: 1lEzoS6lahMd28mmrw5UUpZuyqEwKaqg1&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;application/vnd.google-apps.folder&#39;</code></pre>
 <pre><code>## Local file:</code></pre>
-<pre><code>## • &#39;/tmp/Rtmp00HN9T/female_users_pokemon.csv&#39;</code></pre>
+<pre><code>## • &#39;/tmp/RtmprT1ZkO/male_users_pokemon.csv&#39;</code></pre>
 <pre><code>## Uploaded into Drive file:</code></pre>
-<pre><code>## • &#39;female_users_pokemon.csv&#39; &lt;id: 1RNMGCLmEkWr4474itpW4F7bvAU6neOYy&gt;</code></pre>
+<pre><code>## • &#39;male_users_pokemon.csv&#39; &lt;id: 1QdGnuUEBgpb22IMru4pjjFE8aGwCfSMw&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;text/csv&#39;</code></pre>
 <pre><code>## Local file:</code></pre>
-<pre><code>## • &#39;/tmp/Rtmp00HN9T/male_users_pokemon.csv&#39;</code></pre>
+<pre><code>## • &#39;/tmp/RtmprT1ZkO/female_users_pokemon.csv&#39;</code></pre>
 <pre><code>## Uploaded into Drive file:</code></pre>
-<pre><code>## • &#39;male_users_pokemon.csv&#39; &lt;id: 1qItYgoO56Y3sBQMzIz4hR20edqcbrgEF&gt;</code></pre>
+<pre><code>## • &#39;female_users_pokemon.csv&#39; &lt;id: 1f6wUDZaFl7pSPtr5NNekqjx0GKhfLMYQ&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;text/csv&#39;</code></pre>
 <pre><code>## Created Drive file:</code></pre>
-<pre><code>## • &#39;red&#39; &lt;id: 15Ohghm6HP-YetHV9BdcusPDaMFocOl09&gt;</code></pre>
+<pre><code>## • &#39;blue&#39; &lt;id: 1uvaYPnMrk9adgkoVKGJryLi-lBNTU8Ps&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;application/vnd.google-apps.folder&#39;</code></pre>
 <pre><code>## Local file:</code></pre>
-<pre><code>## • &#39;/tmp/Rtmp00HN9T/female_users_pokemon.csv&#39;</code></pre>
+<pre><code>## • &#39;/tmp/RtmprT1ZkO/male_users_pokemon.csv&#39;</code></pre>
 <pre><code>## Uploaded into Drive file:</code></pre>
-<pre><code>## • &#39;female_users_pokemon.csv&#39; &lt;id: 1J0IuOOxo4xEsqfQY0lZBRx2s4E9t4B9M&gt;</code></pre>
+<pre><code>## • &#39;male_users_pokemon.csv&#39; &lt;id: 1eeKavo_FA3RBLGyPSzrCPedEz2c15QP7&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;text/csv&#39;</code></pre>
 <pre><code>## Local file:</code></pre>
-<pre><code>## • &#39;/tmp/Rtmp00HN9T/male_users_pokemon.csv&#39;</code></pre>
+<pre><code>## • &#39;/tmp/RtmprT1ZkO/female_users_pokemon.csv&#39;</code></pre>
 <pre><code>## Uploaded into Drive file:</code></pre>
-<pre><code>## • &#39;male_users_pokemon.csv&#39; &lt;id: 17c7qUdha3GRK7ylYNqChxH02LtGAWd6E&gt;</code></pre>
+<pre><code>## • &#39;female_users_pokemon.csv&#39; &lt;id: 17-k6N3xe0E30ax4gLrtN3xGdvkOM0Kgo&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;text/csv&#39;</code></pre>
 <pre><code>## Created Drive file:</code></pre>
-<pre><code>## • &#39;brown&#39; &lt;id: 1Zvt-AIDfgzDMzBzMNFB80JmcrqOc26_m&gt;</code></pre>
+<pre><code>## • &#39;white&#39; &lt;id: 1cZT19ufkLMuDUOtmd3lLPL_mbFfyBj9c&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;application/vnd.google-apps.folder&#39;</code></pre>
 <pre><code>## Local file:</code></pre>
-<pre><code>## • &#39;/tmp/Rtmp00HN9T/female_users_pokemon.csv&#39;</code></pre>
+<pre><code>## • &#39;/tmp/RtmprT1ZkO/male_users_pokemon.csv&#39;</code></pre>
 <pre><code>## Uploaded into Drive file:</code></pre>
-<pre><code>## • &#39;female_users_pokemon.csv&#39; &lt;id: 15hVIrkJfi0_dA2nw34e83XP2tGELMEqt&gt;</code></pre>
+<pre><code>## • &#39;male_users_pokemon.csv&#39; &lt;id: 1lctd2DQ86Y6s5mNZjAEjO0yIBbigG3hU&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;text/csv&#39;</code></pre>
 <pre><code>## Local file:</code></pre>
-<pre><code>## • &#39;/tmp/Rtmp00HN9T/male_users_pokemon.csv&#39;</code></pre>
+<pre><code>## • &#39;/tmp/RtmprT1ZkO/female_users_pokemon.csv&#39;</code></pre>
 <pre><code>## Uploaded into Drive file:</code></pre>
-<pre><code>## • &#39;male_users_pokemon.csv&#39; &lt;id: 1v6o_1JrAC1Dp3T8nBfWG4n21oBt3yyjq&gt;</code></pre>
+<pre><code>## • &#39;female_users_pokemon.csv&#39; &lt;id: 1822bfNqSt2_ILC5ypuq63Feva74McvrP&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;text/csv&#39;</code></pre>
 <pre><code>## Created Drive file:</code></pre>
-<pre><code>## • &#39;blue&#39; &lt;id: 1PYqnnCWWpFDGRT5vothbYgLNcfCRPNPE&gt;</code></pre>
+<pre><code>## • &#39;red&#39; &lt;id: 12C59JzVKYEqJPuB5IsFPfdSaiRynNiJW&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;application/vnd.google-apps.folder&#39;</code></pre>
 <pre><code>## Local file:</code></pre>
-<pre><code>## • &#39;/tmp/Rtmp00HN9T/female_users_pokemon.csv&#39;</code></pre>
+<pre><code>## • &#39;/tmp/RtmprT1ZkO/male_users_pokemon.csv&#39;</code></pre>
 <pre><code>## Uploaded into Drive file:</code></pre>
-<pre><code>## • &#39;female_users_pokemon.csv&#39; &lt;id: 1MjDB8dMTKPm4zScOnaUaRGpBeg_iYeJq&gt;</code></pre>
+<pre><code>## • &#39;male_users_pokemon.csv&#39; &lt;id: 15-v9QBuo5DWMqtRbpsirLypB-GT7w9-6&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;text/csv&#39;</code></pre>
 <pre><code>## Local file:</code></pre>
-<pre><code>## • &#39;/tmp/Rtmp00HN9T/male_users_pokemon.csv&#39;</code></pre>
+<pre><code>## • &#39;/tmp/RtmprT1ZkO/female_users_pokemon.csv&#39;</code></pre>
 <pre><code>## Uploaded into Drive file:</code></pre>
-<pre><code>## • &#39;male_users_pokemon.csv&#39; &lt;id: 1giBPREcKmMtnCBPAtltpvBftcfZTDQY7&gt;</code></pre>
+<pre><code>## • &#39;female_users_pokemon.csv&#39; &lt;id: 1d1m0Kzpsf2-MZ99My3Ant7rnH0K36z4r&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;text/csv&#39;</code></pre>
 <pre><code>## Created Drive file:</code></pre>
-<pre><code>## • &#39;white&#39; &lt;id: 1_utPShcpyPjhDnjPUT859fpI3bXQHdZQ&gt;</code></pre>
+<pre><code>## • &#39;brown&#39; &lt;id: 1JFlBfx_N501uJIyAo1j5AWqrveB5utXs&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;application/vnd.google-apps.folder&#39;</code></pre>
 <pre><code>## Local file:</code></pre>
-<pre><code>## • &#39;/tmp/Rtmp00HN9T/female_users_pokemon.csv&#39;</code></pre>
+<pre><code>## • &#39;/tmp/RtmprT1ZkO/male_users_pokemon.csv&#39;</code></pre>
 <pre><code>## Uploaded into Drive file:</code></pre>
-<pre><code>## • &#39;female_users_pokemon.csv&#39; &lt;id: 1GQA6Q7EoNtpmcYDekNN9iHdLu3oAw9ZN&gt;</code></pre>
+<pre><code>## • &#39;male_users_pokemon.csv&#39; &lt;id: 18_j2DZG1Kj4PdGQuoAtmk3pxT0u9s_Km&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;text/csv&#39;</code></pre>
 <pre><code>## Local file:</code></pre>
-<pre><code>## • &#39;/tmp/Rtmp00HN9T/male_users_pokemon.csv&#39;</code></pre>
+<pre><code>## • &#39;/tmp/RtmprT1ZkO/female_users_pokemon.csv&#39;</code></pre>
 <pre><code>## Uploaded into Drive file:</code></pre>
-<pre><code>## • &#39;male_users_pokemon.csv&#39; &lt;id: 1Cr1LyKchaDS9-QvtKD08pXEDfqBqP022&gt;</code></pre>
+<pre><code>## • &#39;female_users_pokemon.csv&#39; &lt;id: 1oZS9KbCAnE9FF_V8Cb9spGzhDNfLhPAK&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;text/csv&#39;</code></pre>
 <pre><code>## Created Drive file:</code></pre>
-<pre><code>## • &#39;yellow&#39; &lt;id: 1APZlyu2dV4Gs1IoBQ-c1nAUsxFKvtQTW&gt;</code></pre>
+<pre><code>## • &#39;yellow&#39; &lt;id: 1CxP6eTlaVriLlVfvngMnZ4SMWgPCjwmC&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;application/vnd.google-apps.folder&#39;</code></pre>
 <pre><code>## Local file:</code></pre>
-<pre><code>## • &#39;/tmp/Rtmp00HN9T/female_users_pokemon.csv&#39;</code></pre>
+<pre><code>## • &#39;/tmp/RtmprT1ZkO/male_users_pokemon.csv&#39;</code></pre>
 <pre><code>## Uploaded into Drive file:</code></pre>
-<pre><code>## • &#39;female_users_pokemon.csv&#39; &lt;id: 10w4b_D_cUu03IqVXpXBWaWdhzvbhN5uE&gt;</code></pre>
+<pre><code>## • &#39;male_users_pokemon.csv&#39; &lt;id: 15DDrsR5JJPb4H19hkDhUdo2lxa9rY2IS&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;text/csv&#39;</code></pre>
 <pre><code>## Local file:</code></pre>
-<pre><code>## • &#39;/tmp/Rtmp00HN9T/male_users_pokemon.csv&#39;</code></pre>
+<pre><code>## • &#39;/tmp/RtmprT1ZkO/female_users_pokemon.csv&#39;</code></pre>
 <pre><code>## Uploaded into Drive file:</code></pre>
-<pre><code>## • &#39;male_users_pokemon.csv&#39; &lt;id: 1XezzKhFgp_uZZQJVoZEsIqpBWKoQaIeM&gt;</code></pre>
+<pre><code>## • &#39;female_users_pokemon.csv&#39; &lt;id: 1LyiZLYqiJrJ-rEZvXY_wU-gHEV5BNbVC&gt;</code></pre>
 <pre><code>## With MIME type:</code></pre>
 <pre><code>## • &#39;text/csv&#39;</code></pre>
 <ul>
@@ -739,6 +739,58 @@ para a pasta compartilhada no google drive</a></li>
 <div id="passo-6---criar-um-arquivo-no-google-sheets-com-as-regiões-de-cada-e-o-elemento-de-cada-pokemon" class="section level3">
 <h3>Passo 6 - Criar um arquivo no Google Sheets com as regiões de cada e
 o elemento de cada pokemon</h3>
+<pre class="r"><code># Nome do arquivo
+sheet_name &lt;- &quot;Pokemons Iniciais por região do brasil&quot;
+
+# Criar planilha e adicionar cabeçalho
+spreadsheet &lt;- gs4_create(sheet_name, sheets = data.frame(Região = character(), `Número de Pessoas` = integer(), Pokemon_Inicial = character()))</code></pre>
+<pre><code>## ✔ Creating new Sheet: &quot;Pokemons Iniciais por região do brasil&quot;.</code></pre>
+<pre><code>## ! Using an auto-discovered, cached token.</code></pre>
+<pre><code>##   To suppress this message, modify your code or options to clearly consent to
+##   the use of a cached token.</code></pre>
+<pre><code>##   See gargle&#39;s &quot;Non-interactive auth&quot; vignette for more details:</code></pre>
+<pre><code>##   &lt;https://gargle.r-lib.org/articles/non-interactive-auth.html&gt;</code></pre>
+<pre><code>## ℹ The googlesheets4 package is using a cached token for
+##   &#39;pedro.h.castr8@gmail.com&#39;.</code></pre>
+<pre class="r"><code># Inicializar variável data
+data &lt;- data.frame(Região = character(), UF = character(), Elemento = character(), `Número de Pessoas` = integer())
+
+# Cria uma tabela com as informações de UF e região
+uf_region_df &lt;- data.frame(UF = c(&quot;AC&quot;, &quot;AL&quot;, &quot;AM&quot;, &quot;AP&quot;, &quot;BA&quot;, &quot;CE&quot;, &quot;DF&quot;, &quot;ES&quot;, &quot;GO&quot;, &quot;MA&quot;, &quot;MG&quot;, &quot;MS&quot;, &quot;MT&quot;, &quot;PA&quot;, &quot;PB&quot;, &quot;PE&quot;, &quot;PI&quot;, &quot;PR&quot;, &quot;RJ&quot;, &quot;RN&quot;, &quot;RO&quot;, &quot;RR&quot;, &quot;RS&quot;, &quot;SC&quot;, &quot;SE&quot;, &quot;SP&quot;, &quot;TO&quot;),
+                           Regiao = c(&quot;Norte&quot;, &quot;Nordeste&quot;, &quot;Norte&quot;, &quot;Norte&quot;, &quot;Nordeste&quot;, &quot;Nordeste&quot;, &quot;Centro-Oeste&quot;, &quot;Sudeste&quot;, &quot;Centro-Oeste&quot;, &quot;Nordeste&quot;, &quot;Sudeste&quot;, &quot;Centro-Oeste&quot;, &quot;Centro-Oeste&quot;, &quot;Norte&quot;, &quot;Nordeste&quot;, &quot;Nordeste&quot;, &quot;Nordeste&quot;, &quot;Sul&quot;, &quot;Sudeste&quot;, &quot;Nordeste&quot;, &quot;Norte&quot;, &quot;Norte&quot;, &quot;Sul&quot;, &quot;Sul&quot;, &quot;Nordeste&quot;, &quot;Sudeste&quot;, &quot;Norte&quot;))
+
+# Adiciona a coluna de região na tabela original
+users_pokemon_df &lt;- users_pokemon_df %&gt;% left_join(uf_region_df, by = &quot;UF&quot;)
+
+# Agrupar por região, somando a quantidade de logins distintos
+grouped_data &lt;- users_pokemon_df %&gt;%
+  group_by(Regiao) %&gt;%
+  summarise(`Número de Pessoas` = n_distinct(login))
+
+# Soma da contagem distinta por região
+grouped_data &lt;- grouped_data %&gt;%
+  group_by(Regiao) %&gt;%
+  summarise(`Número de Pessoas` = sum(`Número de Pessoas`), Pokemon_Inicial = max(pokemon))
+
+# Renomear as colunas
+
+colnames(grouped_data)[3] &lt;- &quot;Pokemon_Inicial&quot;
+
+# Escrever dados no arquivo
+sheet_append(spreadsheet, &quot;Sheet1&quot;, data = grouped_data)</code></pre>
+<pre><code>## ✔ Writing to &quot;Pokemons Iniciais por região do brasil&quot;.</code></pre>
+<pre><code>## ✔ Appending 5 rows to &#39;Sheet1&#39;.</code></pre>
+<pre class="r"><code># Movendo o arquivo para a pasta greenpeace
+
+spreadsheet &lt;- drive_find(n_max = 1, pattern = &quot;Pokemons Iniciais por região do brasil&quot;, type = &quot;spreadsheet&quot;)
+
+drive_mv(spreadsheet,greenpeace_folder_id)</code></pre>
+<pre><code>## Original file:</code></pre>
+<pre><code>## • &#39;Pokemons Iniciais por região do brasil&#39;
+##   &lt;id: 1vxxhdj02c3tlQOpJW_o5_h0dEwIe4KBfl-xa7YPmRi4&gt;</code></pre>
+<pre><code>## Has been moved:</code></pre>
+<pre><code>## • &#39;greenpeace/Pokemons Iniciais por região do brasil&#39;
+##   &lt;id: 1vxxhdj02c3tlQOpJW_o5_h0dEwIe4KBfl-xa7YPmRi4&gt;</code></pre>
 </div>
 </div>
 <div id="exercício-3" class="section level2">

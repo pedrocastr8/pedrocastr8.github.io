@@ -125,58 +125,5 @@ uf_region_df <- data.frame(UF = c("AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES"
 # Adiciona a coluna de região na tabela original
 users_pokemon_df <- users_pokemon_df %>% left_join(uf_region_df, by = "UF")
 
-# Nome do arquivo
-sheet_name <- "Número de pessoas por região - teste"
-
-# Criar planilha e adicionar cabeçalho
-spreadsheet <- gs4_create(sheet_name, sheets = data.frame(Região = character(), `Número de Pessoas` = integer(), Elemento = character()))
-
-# Inicializar variável data
-data <- data.frame(Região = character(), `Número de Pessoas` = integer(), Elemento = character())
-
-# Loop pelas regiões e UFs
-regioes <- unique(users_pokemon_df$Região)
-for (regiao in regioes) {
-  # Subconjunto de dados da região atual
-  subset_data <- users_pokemon_df %>%
-    filter(Região == !!regiao) %>%
-    group_by(element) %>%
-    summarise(`Número de Pessoas` = n_distinct(users_pokemon_df$login))
-  
-  # Verificar se há dados para a região atual
-  if (nrow(subset_data) > 0) {
-    # Escrever linhas na planilha com o resumo
-    data_final <- rbind(data, data.frame(Região = regiao, `Número de Pessoas` = subset_data$`Número de Pessoas`, Elemento = subset_data$element))
-  }
-}
-
 # Escrever dados no arquivo
-sheet_write(spreadsheet, "Sheet1", data = data_final)
-
-
-
-
-
-# # Loop pelas regiões e UFs
-# regioes <- unique(users_pokemon_df$Região)
-# for (regiao in regioes) {
-#   ufs <- unique(users_pokemon_df$UF[users_pokemon_df$Região == regiao])
-#   for (uf in ufs) {
-#     # Subconjunto de dados da região/UF atual
-#     subset_data <- users_pokemon_df %>%
-#       filter(Região == !!regiao, UF == !!uf) %>%
-#       group_by(Elemento) %>%
-#       summarise(Número_de_Pessoas = n())
-#     
-#     # Verificar se há dados para a região/UF atual
-#     if (nrow(subset_data) > 0) {
-#       # Escrever linhas na planilha com o resumo
-#       data <- rbind(data, data.frame(Região = regiao, UF = uf, Elemento = subset_data$Elemento, Número_de_Pessoas = subset_data$Número_de_Pessoas))
-#     }
-#   }
-# }
-# 
-# # Escrever dados no arquivo
-# sheet_write(spreadsheet, "Resumo", data = data)
-
-
+sheet_append(spreadsheet, "Sheet1", data = subset_data)

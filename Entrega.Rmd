@@ -238,7 +238,7 @@ for (element in unique_element) {
     # Subset the data to only include rows with the current element and gender
     subset_data <- users_pokemon_df %>%
       filter(element == !!element, gender == !!gender) %>%
-      select(1, 14, 15, 17)
+      select(1, 14, 15, 18)
     
     # Write the CSV file to a temporary directory
     file_name <- paste0(gender, "_users_pokemon.csv")
@@ -246,7 +246,7 @@ for (element in unique_element) {
     write_csv(subset_data, tmp_file_path)
     
     # Upload the CSV file to the corresponding folder in Google Drive
-    drive_upload(tmp_file_path, type = "text/csv", path = element_folder$id, name = file_name)
+    drive_upload(tmp_file_path, type = "text/csv", path = element_folder$id, name = file_name, overwrite = TRUE)
     
     # Remove the temporary file
     file.remove(tmp_file_path)
@@ -258,6 +258,46 @@ for (element in unique_element) {
 
 ### Passo 6 - Criar um arquivo no Google Sheets com as regiões de cada e o elemento de cada pokemon
 
+```{r}
+# Nome do arquivo
+sheet_name <- "Pokemons Iniciais por região do brasil"
+
+# Criar planilha e adicionar cabeçalho
+spreadsheet <- gs4_create(sheet_name, sheets = data.frame(Região = character(), `Número de Pessoas` = integer(), Pokemon_Inicial = character()))
+
+# Inicializar variável data
+data <- data.frame(Região = character(), UF = character(), Elemento = character(), `Número de Pessoas` = integer())
+
+# Cria uma tabela com as informações de UF e região
+uf_region_df <- data.frame(UF = c("AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"),
+                           Regiao = c("Norte", "Nordeste", "Norte", "Norte", "Nordeste", "Nordeste", "Centro-Oeste", "Sudeste", "Centro-Oeste", "Nordeste", "Sudeste", "Centro-Oeste", "Centro-Oeste", "Norte", "Nordeste", "Nordeste", "Nordeste", "Sul", "Sudeste", "Nordeste", "Norte", "Norte", "Sul", "Sul", "Nordeste", "Sudeste", "Norte"))
+
+# Adiciona a coluna de região na tabela original
+users_pokemon_df <- users_pokemon_df %>% left_join(uf_region_df, by = "UF")
+
+# Agrupar por região, somando a quantidade de logins distintos
+grouped_data <- users_pokemon_df %>%
+  group_by(Regiao) %>%
+  summarise(`Número de Pessoas` = n_distinct(login))
+
+# Soma da contagem distinta por região
+grouped_data <- grouped_data %>%
+  group_by(Regiao) %>%
+  summarise(`Número de Pessoas` = sum(`Número de Pessoas`), Pokemon_Inicial = max(pokemon))
+
+# Renomear as colunas
+
+colnames(grouped_data)[3] <- "Pokemon_Inicial"
+
+# Escrever dados no arquivo
+sheet_append(spreadsheet, "Sheet1", data = grouped_data)
+
+# Movendo o arquivo para a pasta greenpeace
+
+spreadsheet <- drive_find(n_max = 1, pattern = "Pokemons Iniciais por região do brasil", type = "spreadsheet")
+
+drive_mv(spreadsheet,greenpeace_folder_id)
+```
 
 
 ## Exercício 3
