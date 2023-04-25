@@ -254,6 +254,8 @@ for (element in unique_element) {
 }
 ```
 
+- [Link para a pasta compartilhada no google drive](https://drive.google.com/drive/folders/1yuM9Gr5YtULMFL23sCj2isOw9fq9Qbpx?usp=sharing)
+
 ### Passo 6 - Criar um arquivo no Google Sheets com as regiões de cada e o elemento de cada pokemon
 
 
