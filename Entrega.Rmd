@@ -19,6 +19,7 @@ library(httr)
 library(jsonlite)
 library(googledrive)
 library(readr)
+library(googlesheets4)
 ```
 
 
@@ -215,40 +216,46 @@ users_pokemon_df <- users_df %>%
   inner_join(pokemon_df, by = "pokemon")
 ```
 
-### Passo 5 - Criação da pasta e dos arquivos para cada elemento e genêro
+### Passo 5 - Conectar ao Google Drive e fazer o upload das pastas e arquivos
 
 ```{r}
-# Get distinct values from element column
+# Authenticate with Google Drive
+drive_auth()
+
+# Find the ID of the "greenpeace" folder in your Google Drive
+greenpeace_folder_id <- drive_find(n_max = 1, pattern = "greenpeace", type = "folder")$id
+
+# Get distinct values from element and gender columns
 unique_element <- unique(users_pokemon_df$element)
 unique_gender <- unique(users_pokemon_df$gender)
 
-# Creating folders in current directory and writing CSV files
+# Upload a local file to the "greenpeace" folder in Google Drive
 for (element in unique_element) {
-  dir.create(paste0(getwd(), "/", element), showWarnings = FALSE)
+  element_folder_name <- paste0(element)
+  element_folder <- drive_mkdir(element_folder_name, path = greenpeace_folder_id)
   
   for (gender in unique_gender) {
     # Subset the data to only include rows with the current element and gender
     subset_data <- users_pokemon_df %>%
       filter(element == !!element, gender == !!gender) %>%
-      select(1, 14, 15, 18) # Select created columns and gender column
+      select(1, 14, 15, 17)
     
-    # Write the CSV file to the corresponding folder
-    write_csv(subset_data, file.path(getwd(), element, paste0(gender, "_users_pokemon.csv")))
+    # Write the CSV file to a temporary directory
+    file_name <- paste0(gender, "_users_pokemon.csv")
+    tmp_file_path <- file.path(tempdir(), file_name)
+    write_csv(subset_data, tmp_file_path)
+    
+    # Upload the CSV file to the corresponding folder in Google Drive
+    drive_upload(tmp_file_path, type = "text/csv", path = element_folder$id, name = file_name)
+    
+    # Remove the temporary file
+    file.remove(tmp_file_path)
   }
 }
 ```
 
-### Passo 6 - Fazer o upload das pastas e arquivos para o google drive
+### Passo 6 - Criar um arquivo no Google Sheets com as regiões de cada e o elemento de cada pokemon
 
-```{r}
-
-```
-
-### Passo 7 - Criação de uma planilha no sheets
-
-```{r}
-
-```
 
 
 ## Exercício 3

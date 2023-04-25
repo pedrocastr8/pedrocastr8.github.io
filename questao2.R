@@ -3,6 +3,9 @@ library(httr)
 library(jsonlite)
 library(tidyverse)
 library(googledrive)
+library(googlesheets4)
+library(readxl)
+library(writexl)
 
 # Function for user in API
 get_random_user <- function() {
@@ -68,17 +71,21 @@ users_pokemon_df <- users_df_teste %>%
   mutate(pokemon = sample(pokemon_df$pokemon, size = n(), replace = TRUE)) %>%
   inner_join(pokemon_df, by = "pokemon")
 
-# Connect to Google Drive
 
+# Authenticate with Google Drive
 drive_auth()
 
-# Get distinct values from element column
+# Find the ID of the "greenpeace" folder in your Google Drive
+greenpeace_folder_id <- drive_find(n_max = 1, pattern = "greenpeace", type = "folder")$id
+
+# Get distinct values from element and gender columns
 unique_element <- unique(users_pokemon_df$element)
 unique_gender <- unique(users_pokemon_df$gender)
 
-# Creating folders in current directory and writing CSV files
+# Upload a local file to the "greenpeace" folder in Google Drive
 for (element in unique_element) {
-  dir.create(paste0(getwd(), "/", element), showWarnings = FALSE)
+  element_folder_name <- paste0(element)
+  element_folder <- drive_mkdir(element_folder_name, path = greenpeace_folder_id)
   
   for (gender in unique_gender) {
     # Subset the data to only include rows with the current element and gender
@@ -86,7 +93,90 @@ for (element in unique_element) {
       filter(element == !!element, gender == !!gender) %>%
       select(1, 14, 15, 17)
     
-    # Write the CSV file to the corresponding folder
-    write_csv(subset_data, file.path(getwd(), element, paste0(gender, "_users_pokemon.csv")))
+    # Write the CSV file to a temporary directory
+    file_name <- paste0(gender, "_users_pokemon.csv")
+    tmp_file_path <- file.path(tempdir(), file_name)
+    write_csv(subset_data, tmp_file_path)
+    
+    # Upload the CSV file to the corresponding folder in Google Drive
+    drive_upload(tmp_file_path, type = "text/csv", path = element_folder$id, name = file_name)
+    
+    # Remove the temporary file
+    file.remove(tmp_file_path)
   }
 }
+
+# Autenticar com a conta do Google
+gs4_auth()
+
+# Nome do arquivo
+sheet_name <- "Quantidade de pokemons iniciais por região"
+
+# Criar planilha e adicionar cabeçalho
+spreadsheet <- gs4_create(sheet_name, sheets = data.frame(Região = character(), UF = character(), Elemento = character(), `Número de Pessoas` = integer()))
+
+# Inicializar variável data
+data <- data.frame(Região = character(), UF = character(), Elemento = character(), `Número de Pessoas` = integer())
+
+# Cria uma tabela com as informações de UF e região
+uf_region_df <- data.frame(UF = c("AC", "AL", "AM", "AP", "BA", "CE", "DF", "ES", "GO", "MA", "MG", "MS", "MT", "PA", "PB", "PE", "PI", "PR", "RJ", "RN", "RO", "RR", "RS", "SC", "SE", "SP", "TO"),
+                           Regiao = c("Norte", "Nordeste", "Norte", "Norte", "Nordeste", "Nordeste", "Centro-Oeste", "Sudeste", "Centro-Oeste", "Nordeste", "Sudeste", "Centro-Oeste", "Centro-Oeste", "Norte", "Nordeste", "Nordeste", "Nordeste", "Sul", "Sudeste", "Nordeste", "Norte", "Norte", "Sul", "Sul", "Nordeste", "Sudeste", "Norte"))
+
+# Adiciona a coluna de região na tabela original
+users_pokemon_df <- users_pokemon_df %>% left_join(uf_region_df, by = "UF")
+
+# Nome do arquivo
+sheet_name <- "Número de pessoas por região - teste"
+
+# Criar planilha e adicionar cabeçalho
+spreadsheet <- gs4_create(sheet_name, sheets = data.frame(Região = character(), `Número de Pessoas` = integer(), Elemento = character()))
+
+# Inicializar variável data
+data <- data.frame(Região = character(), `Número de Pessoas` = integer(), Elemento = character())
+
+# Loop pelas regiões e UFs
+regioes <- unique(users_pokemon_df$Região)
+for (regiao in regioes) {
+  # Subconjunto de dados da região atual
+  subset_data <- users_pokemon_df %>%
+    filter(Região == !!regiao) %>%
+    group_by(element) %>%
+    summarise(`Número de Pessoas` = n_distinct(users_pokemon_df$login))
+  
+  # Verificar se há dados para a região atual
+  if (nrow(subset_data) > 0) {
+    # Escrever linhas na planilha com o resumo
+    data_final <- rbind(data, data.frame(Região = regiao, `Número de Pessoas` = subset_data$`Número de Pessoas`, Elemento = subset_data$element))
+  }
+}
+
+# Escrever dados no arquivo
+sheet_write(spreadsheet, "Sheet1", data = data_final)
+
+
+
+
+
+# # Loop pelas regiões e UFs
+# regioes <- unique(users_pokemon_df$Região)
+# for (regiao in regioes) {
+#   ufs <- unique(users_pokemon_df$UF[users_pokemon_df$Região == regiao])
+#   for (uf in ufs) {
+#     # Subconjunto de dados da região/UF atual
+#     subset_data <- users_pokemon_df %>%
+#       filter(Região == !!regiao, UF == !!uf) %>%
+#       group_by(Elemento) %>%
+#       summarise(Número_de_Pessoas = n())
+#     
+#     # Verificar se há dados para a região/UF atual
+#     if (nrow(subset_data) > 0) {
+#       # Escrever linhas na planilha com o resumo
+#       data <- rbind(data, data.frame(Região = regiao, UF = uf, Elemento = subset_data$Elemento, Número_de_Pessoas = subset_data$Número_de_Pessoas))
+#     }
+#   }
+# }
+# 
+# # Escrever dados no arquivo
+# sheet_write(spreadsheet, "Resumo", data = data)
+
+
